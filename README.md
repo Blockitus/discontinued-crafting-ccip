@@ -137,13 +137,13 @@ contract CCIPSender_Unsafe {
 ```
 Compile
 
-Check  if the smart contract build fine. 
+Check if the smart contract builds fine. 
 
 ```bash
 forge build
 ```
 
-If it is not, correct bugs and try to compile again.
+If it is not, correct any bugs and try to compile again.
 
 **CCIPReceiver_Unsafe.sol**
 
@@ -177,13 +177,13 @@ contract CCIPReceiver_Unsafe is CCIPReceiver {
 
 Compile
 
-Check if the smart contract build fine. 
+Check if the smart contract builds fine. 
 
 ```bash
 forge build
 ```
 
-If it is not, correct bugs and try to compile again.
+If it is not, correct any bugs and try to compile again.
 
 
 ### Deploying Smart Contracts
