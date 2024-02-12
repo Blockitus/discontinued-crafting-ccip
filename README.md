@@ -231,8 +231,6 @@ You have now the basic comprehension about CCIP.
 
 ## My own tech summary 
 
-Certainly! Here is the corrected text:
-
 If you don't want to walk through the process of building the system (NOT RECOMMENDED, BECAUSE YOU HAVE TO LIVE YOUR OWN EXPERIENCE) and the only thing you want is to test the process of sending a message through the Land, I'll provide you with the addresses of my smart contracts deployed in the corresponding blockchains. Please, if you feel good, share your scripts with me to communicate with my smart contracts :).
 
 
