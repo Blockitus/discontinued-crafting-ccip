@@ -1,5 +1,5 @@
 # CRAFTING-CCIP
-## Masterclass #M1
+## Masterclassess
 ## Author 
 
 ### Pedro Machado
@@ -28,7 +28,7 @@ The blockchain industry has evolved to a new level where there exists the necess
 <br/>
 
 
-### What is Chainlink Cross Chain Interoperability Protocol?
+## What is Chainlink Cross Chain Interoperability Protocol?
 
 The Chainlink Cross-Chain Interoperability Protocol (CCIP) provides a single simple interface through which dApps and Web3 entrepreneurs can securely meet all their cross-chain needs, including token transfers and arbitrary messaging.
 
@@ -36,11 +36,7 @@ How you can watch this?: Imagine an ocean with a lot of islands (blockchains), e
 
 Chainlink Cross Chain Interoperability Protocol unlocks the feature for isolated blockchains to share data (i.e: tokens (ERC20, ERC721), or any message) between them.
 
-## Sending a message from Avalanche Fuji network to Sepolia network
-
-Here is a basic example of sending data between two isolated blockchains.
-
-### Requirements
+## Requirements
 
 1. Blockchain skills
 2. Solidity skills
@@ -52,7 +48,7 @@ Here is a basic example of sending data between two isolated blockchains.
 8. Metamask on your web browser
 
  
-### Quickstart
+## Quickstart
 
 ```bash
 git clone https://github.com/Blockitus/crafting-ccip.git
@@ -61,7 +57,8 @@ npm install
 forge install
 ```
 
-### Setup enviroment variables
+
+## Setup enviroment variables
 
 Create a `.env` file into your project and paste the code above:
 
@@ -81,13 +78,20 @@ source .env
 ```
 **Note: You have configured your `foundry.toml` file, so you don't have to make any changes there.** 
 
-### Land
+## M1
+
+### Sending a message from Avalanche Fuji network to Sepolia network
+
+Here is a basic example of sending data between two isolated blockchains.
+
+
+#### Land
 
 - **Source Chain: Avalance Fuji**
 
 - **Destination Chain: Ethereum Sepolia**
 
-### Set of Smart Contracts
+#### Set of Smart Contracts
 
 Source Chain side
 
@@ -186,7 +190,7 @@ forge build
 If it is not, correct any bugs and try to compile again.
 
 
-### Deploying Smart Contracts
+#### Deploying Smart Contracts
 
 To deploy the smart contracts, you need faucet tokens in your wallet
 
@@ -207,7 +211,7 @@ forge create --rpc-url ethereumSepolia --private-key=$PRIVATE_KEY src/CCIPReceiv
 Yeahh!!! We have deployed our smart contracts in the correspondent isolated blockchains. 
 Now we can send a message from the source chain `Avalanche Fuji` to the destination chain `Ethereum Sepolia`.
 
-### Sending the message
+#### Sending the message
 
 Let's got to send the message: `"THANK YOU BLOCKITUS"` from the Fuji to Sepolia. 
 
@@ -225,11 +229,11 @@ cast send <CCIP_SENDER_UNSAFE_ADDRESS> --rpc-url avalancheFuji --private-key=$PR
 
 You can now monitor live the status of your CCIP Cross-Chain Message via [CCIP Explorer](https://ccip.chain.link/). Just paste the transaction hash into the search bar and open the message details.
 
-## CONGRATULATIONS :) 
+### CONGRATULATIONS :) 
 
 You have now the basic comprehension about CCIP.
 
-## My own tech summary 
+### My own tech summary 
 
 If you don't want to walk through the process of building the system (NOT RECOMMENDED, BECAUSE YOU HAVE TO LIVE YOUR OWN EXPERIENCE) and the only thing you want is to test the process of sending a message through the Land, I'll provide you with the addresses of my smart contracts deployed in the corresponding blockchains. Please, if you feel good, share your scripts with me to communicate with my smart contracts :).
 
@@ -258,3 +262,289 @@ If you don't want to walk through the process of building the system (NOT RECOMM
 ```bash
 0x2899f43ec998fb79992da287844108ea629746856f0b8a28e8e063a17efe8402
 ```
+## M2
+### Transfering ERC20 from Sepolia to Fuji
+
+Now that we saw how can send some text message in an unsecure way from one blockchain to another, let's try to send some tokens from one smart contract deployed in the source chain to an EOA at destination chain in a secure way. 
+
+### Type of Tokens Supported
+
+Chainlink CCIP allows us transfer tokens from the source chain to the destination chain. However, we can't send whoerever token, just those tokens supported by the land. The token that we want to send should be exists in the source chain and the destination chain. 
+
+Chainlink CCIP has two types of token categories: 
+- CCIP-BnM
+  This type of token use the Burn and Mint handling mechanism to transfer tokens. It means source chains burn the amount of token that you want to transfer and the destination chains mint the same amount in the receiver address. 
+- CCIP-LnM
+  Tokens are locked on the source chain (in Token Pools), and wrapped/synthetic/derivative tokens that represent the locked tokens are minted on the destination chain.
+
+  Which of two handling mechanism we need to use, it depends of the token behaviour. 
+
+To save in time Chainlink has two ERC20 test tokens that represent those categories. For the propuse of this report we will use the CCIP-BnM test token into the land described bellow. 
+
+### Land
+
+Remember the land is the pathway to transport the information between two blockchains in CCIP. Lands are unidirectional, it is not the same path transfer information from Fuji to Sepolia instead of Sepolia to Fuji. For this example we will take into account the second land mentioned. 
+
+**Note: Chainlink CCIP has a list of Lands supported. Follow its offitial [documentation](https://docs.chain.link/ccip/supported-networks/v1_2_0/testnet) to see other options.**
+
+
+**Properties**
+
+Sepolia Source Chain:
+- Router address: `0x0BF3dE8c5D3e8A2B34D2BEeB17ABfCeBaf363A59`
+- Chain selector: `16015286601757825753`
+- Supported Fee token selected: 
+  - Link: `0x779877A7B0D9E8603169DdbD7836e478b4624789`
+- Address of CCIP-BnM: `0xFd57b4ddBf88a4e07fF4e34C487b99af2Fe82a05`
+
+Fuji Destination Chain: 
+- Chain selector: `14767482510784806043`
+- Address of CCIP-BnM: `0xD21341536c5cF5EB1bcb58f6723cE26e8D8E90e4`
+
+
+### Coding the Smart Contract
+
+For our cross chain dapp we need to develop a smart contract that transact our tokens from the source chain: Sepolia to the destination chain: Fuji. 
+
+### Contract's path
+
+```bash
+
+..src/M2/
+.CCIPTokenSender.sol
+.ChainsListerOperator.sol
+```
+
+#### ChainsListerOperator.sol
+
+This smart contract handling the destination chain selectors supported by the protocol. 
+
+```javascript
+// SPDX-License-Identifier: MIT
+pragma solidity 0.8.19;
+
+import {OwnerIsCreator} from "@chainlink/contracts-ccip/src/v0.8/shared/access/OwnerIsCreator.sol";
+
+contract ChainsListerOperator is OwnerIsCreator {
+    
+    mapping(uint64 => bool) public whitelistedChains;
+
+    error DestinationChainNotWhitelisted(uint64 destinationChainSelector);
+    error DestinationChainAlreadyWhiteListed(uint64 destinationChainSelector);
+
+    modifier onlyWhitelistedChain(uint64 _destinationChainSelector) {
+        if (!whitelistedChains[_destinationChainSelector])
+            revert DestinationChainNotWhitelisted(_destinationChainSelector);
+        _;
+    }
+
+    function whitelistChain( uint64 _destinationChainSelector) external onlyOwner {
+        if (whitelistedChains[_destinationChainSelector]) revert DestinationChainAlreadyWhiteListed(_destinationChainSelector);
+        whitelistedChains[_destinationChainSelector] = true;
+    }
+
+     function denylistChain(uint64 _destinationChainSelector) external onlyOwner {
+        if(!whitelistedChains[_destinationChainSelector]) revert DestinationChainNotWhitelisted(_destinationChainSelector);
+        whitelistedChains[_destinationChainSelector] = false;
+    }
+
+}
+```
+
+#### CCIPTokenSender.sol
+
+This smart contract allows us to transfer tokens.
+
+```javascript
+// SPDX-License-Identifier: MIT
+pragma solidity 0.8.19;
+
+import {IRouterClient} from "@chainlink/contracts-ccip/src/v0.8/ccip/interfaces/IRouterClient.sol";
+import {Client} from "@chainlink/contracts-ccip/src/v0.8/ccip/libraries/Client.sol";
+import {IERC20} from "@chainlink/contracts-ccip/src/v0.8/vendor/openzeppelin-solidity/v4.8.0/contracts/interfaces/IERC20.sol";
+import {ChainsListerOperator} from "./ChainsListerOperator.sol";
+
+contract CCIPTokenSender is ChainsListerOperator {
+    IRouterClient router;
+    IERC20 linkToken;
+
+    address constant public NATIVE_TOKEN = address(uint160(uint256(keccak256(abi.encodePacked("NATIVE_TOKEN")))));
+    
+    
+    error InsufficientBalance(uint256 currentBalance, uint256 calculatedFees);
+    error NothingToWithdraw();
+    error InvalidReceiverAddress();
+
+    event TokensTransferred(
+        bytes32 indexed messageId, // The unique ID of the message.
+        uint64 indexed destinationChainSelector, // The chain selector of the destination chain.
+        address receiver, // The address of the receiver on the destination chain.
+        address token, // The token address that was transferred.
+        uint256 tokenAmount, // The token amount that was transferred.
+        address feeToken, // the token address used to pay CCIP fees.
+        uint256 fees // The fees paid for sending the message.
+    );
+
+    event Withdrawal(address indexed beneficiary, address indexed token, uint256 amount);
+
+
+    constructor(address _router, address _linkToken) {
+        router = IRouterClient(_router);
+        linkToken = IERC20(_linkToken);
+    }
+
+    receive() external payable{}
+
+    function transferTokensPaylinkToken(
+        uint64 _destinationChainSelector, 
+        address _receiver, 
+        address _token, 
+        uint256 _amount) external onlyOwner onlyWhitelistedChain(_destinationChainSelector) returns (bytes32 messageId) {
+            
+            if (_receiver == address(0)) revert InvalidReceiverAddress();
+            Client.EVM2AnyMessage memory message = buildCcipMessage(
+                _receiver,
+                _token,
+                _amount,
+                address(linkToken)
+            );
+            
+            uint256 fees = _ccipFeesManagement(_destinationChainSelector, message);
+
+            IERC20(_token).approve(address(router), _amount);
+
+            messageId = router.ccipSend(_destinationChainSelector, message); 
+
+            emit TokensTransferred(
+            messageId,
+            _destinationChainSelector,
+            _receiver,
+            _token,
+            _amount,
+            address(linkToken),
+            fees
+            );   
+        
+        }
+
+    function withdraw(address _beneficiary) external {
+        uint256 amount = address(this).balance;
+        if (amount == 0) revert NothingToWithdraw();
+        payable(_beneficiary).transfer(amount);
+        emit Withdrawal(_beneficiary, NATIVE_TOKEN, amount);
+    }
+
+    function withdrawToken(
+        address _beneficiary,
+        address _token
+    ) public onlyOwner {
+        uint256 amount = IERC20(_token).balanceOf(address(this));
+        
+        if (amount == 0) revert NothingToWithdraw();
+        
+        IERC20(_token).transfer(_beneficiary, amount);
+        emit Withdrawal(_beneficiary, _token, amount);
+    }
+
+    function buildCcipMessage(
+        address _receiver, 
+        address _token,
+        uint256 _amount,
+        address _feeTokenAddress
+    ) public pure returns (Client.EVM2AnyMessage memory message) {
+        
+        Client.EVMTokenAmount[] memory tokenAmounts = new Client.EVMTokenAmount[](1);
+        Client.EVMTokenAmount memory tokenAmount = Client.EVMTokenAmount({
+                token: _token,
+                amount: _amount
+            });
+        
+        tokenAmounts[0] = tokenAmount;
+
+        message = Client.EVM2AnyMessage({
+            receiver: abi.encode(_receiver),
+            data:"",
+            tokenAmounts: tokenAmounts,
+            extraArgs: Client._argsToBytes(
+            Client.EVMExtraArgsV1({gasLimit: 0})
+            ),
+            feeToken: _feeTokenAddress
+        });
+
+    }
+
+    function _ccipFeesManagement(uint64 _destinationChainSelector, Client.EVM2AnyMessage memory message) private returns(uint256 fees) {
+        fees = router.getFee(_destinationChainSelector, message);
+        uint256 currentBalance = linkToken.balanceOf(address(this));
+        if (fees > currentBalance) revert InsufficientBalance(currentBalance, fees);
+        linkToken.approve(address(router), fees);
+    }
+}
+```
+
+### Deploying contracts
+**Note: Remember before do this you need had the set up your enviroment variables.** 
+
+Set up
+```bash
+source .env
+```
+
+Run
+```bash
+forge create --rpc-url ethereumSepolia --private-key=$PRIVATE_KEY src/M2/CCIPTokenSender.sol:CCIPTokenSender --contructor-args 0x0BF3dE8c5D3e8A2B34D2BEeB17ABfCeBaf363A59 0x779877A7B0D9E8603169DdbD7836e478b4624789
+```
+
+### Funds your CCIPTokenSender
+
+Okay, great!!! You are a genious, however you need to fund your CCIPTokenSender with the amount of fee tokens, in this case we will to use 1 link; and the amount of token that you want to send, in this case is 1000000000000000 CCIP-BnM equal to 0.001 CCIP-BnM.
+
+In your Metamask wallet, you had imported both tokens in the Sepolia source chain. To send tokens to the contract place in the token receive field the CCIPTokenSender address and send the amount corresponding to the token. 
+
+**This is too easy to show how you can do it, please take effort about it.**
+
+
+### Transfer tokens
+
+Yeahh !! Finally we arrive to the final step of our journey. 
+
+Once we have our CCIPTokenSender smart contract funded with fee tokens and the tokens that we want to send, we need to whitelisted our destination chain-selector. 
+
+Prepare
+- Fuji chain-selector: `14767482510784806043`
+
+Run
+
+```bash
+cast send <CCIP_TOKEN_SENDER_ADDRESS> --rpc-url ethereumSepolia --private-key=$PRIVATE_KEY "whitelistChain(uint64)" 14767482510784806043
+```
+
+Now that we had whitelisted our destination chain-selector, we can transfer the amount of tokens to the EOA.
+
+Prepare
+- Fuji chain-selector: `14767482510784806043`
+- Receiver address: `<RECEIVER_ADDRESS>`
+- Token address: `0xFd57b4ddBf88a4e07fF4e34C487b99af2Fe82a05`
+- Amount: `1000000000000000` 
+
+Run
+```bash
+cast send <CCIP_TOKEN_SENDER_ADDRESS> --rpc-url ethereumSepolia --private-key=$PRIVATE_KEY "transferTokensPaylinkToken(uint64,address,address,uint256)" 14767482510784806043 <RECEIVER_ADDRESS> 0xFd57b4ddBf88a4e07fF4e34C487b99af2Fe82a05 1000000000000000
+```
+
+AWSOME!!! Now you have the hash of the transaction in your cli, you can get it and place into the [chainlink-ccip-explorer](https://ccip.chain.link/) to monitor the state of your transaction. 
+
+### CONGRATULATIONS :) you had passed the Transfer Token between Chains journey
+
+### My own tech
+
+If you don't want to walk through the process of building the system (NOT RECOMMENDED, BECAUSE YOU HAVE TO LIVE YOUR OWN EXPERIENCE) and the only thing you want is to test the process of sending tokens through the Land, I'll provide you with the CCIPTokenSender address of my smart contract deployed on Sepolia. You could change the destination chain selctor if you want to test something different. Please let me know what do you did.
+
+
+**CCIPTokenSender_INTO_SEPOLIA**
+`0x278CB9c0e1Dd49Aa525e9B9F4E543c3C7EC3C07D`
+
+**MessageID**
+`0x6d098e08094d4c8d5beeb0a07228e9e4fe9dbb3909c62486b24157c868ac830a`
+
+[Chainlink_CCIP_Explorer_Transaction](https://ccip.chain.link/msg/0x6d098e08094d4c8d5beeb0a07228e9e4fe9dbb3909c62486b24157c868ac830a)
