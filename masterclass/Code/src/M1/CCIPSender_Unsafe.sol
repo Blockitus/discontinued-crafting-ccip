@@ -16,7 +16,11 @@ contract CCIPSender_Unsafe {
         LinkTokenInterface(link).approve(router, type(uint256).max);
     }
 
-    function send(address receiver, string memory someText, uint64 destinationChainSelector) external {
+    function send(
+        address receiver,
+        string memory someText,
+        uint64 destinationChainSelector
+    ) external {
         Client.EVM2AnyMessage memory message = Client.EVM2AnyMessage({
             receiver: abi.encode(receiver),
             data: abi.encode(someText),
@@ -27,5 +31,4 @@ contract CCIPSender_Unsafe {
 
         IRouterClient(router).ccipSend(destinationChainSelector, message);
     }
-
 }
