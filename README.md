@@ -263,29 +263,30 @@ If you don't want to walk through the process of building the system (NOT RECOMM
 0x2899f43ec998fb79992da287844108ea629746856f0b8a28e8e063a17efe8402
 ```
 ## M2
-### Transfering ERC20 from Sepolia to Fuji
+### Transferring ERC20 from Sepolia to Fuji
 
-Now that we saw how can send some text message in an unsecure way from one blockchain to another, let's try to send some tokens from one smart contract deployed in the source chain to an EOA at destination chain in a secure way. 
+Now that we've seen how to send a text message in an insecure way from one blockchain to another, let's try to send some tokens from a smart contract deployed on the source chain to an EOA on the destination chain in a secure way.
 
-### Type of Tokens Supported
+### Types of Tokens Supported
 
-Chainlink CCIP allows us transfer tokens from the source chain to the destination chain. However, we can't send whoerever token, just those tokens supported by the land. The token that we want to send should be exists in the source chain and the destination chain. 
+Chainlink CCIP allows us to transfer tokens from the source chain to the destination chain. However, we can't send any token; only those tokens supported by the land can be sent. The token we want to send should exist in both the source chain and the destination chain.
 
-Chainlink CCIP has two types of token categories: 
+Chainlink CCIP has two types of token categories:
+
 - CCIP-BnM
-  This type of token use the Burn and Mint handling mechanism to transfer tokens. It means source chains burn the amount of token that you want to transfer and the destination chains mint the same amount in the receiver address. 
+    This type of token uses the Burn and Mint handling mechanism to transfer tokens. Source chains burn the amount of tokens that you want to transfer, and the destination chains mint the same amount in the receiver's address.
 - CCIP-LnM
-  Tokens are locked on the source chain (in Token Pools), and wrapped/synthetic/derivative tokens that represent the locked tokens are minted on the destination chain.
+    Tokens are locked on the source chain (in Token Pools), and wrapped/synthetic/derivative tokens that represent the locked tokens are minted on the destination chain.
 
-  Which of two handling mechanism we need to use, it depends of the token behaviour. 
+Which of the two handling mechanisms we need to use depends on the token's behavior.
 
-To save in time Chainlink has two ERC20 test tokens that represent those categories. For the propuse of this report we will use the CCIP-BnM test token into the land described bellow. 
+To save time, Chainlink has two ERC20 test tokens that represent those categories. For the purpose of this report, we will use the CCIP-BnM test token in the land described below.
 
 ### Land
 
-Remember the land is the pathway to transport the information between two blockchains in CCIP. Lands are unidirectional, it is not the same path transfer information from Fuji to Sepolia instead of Sepolia to Fuji. For this example we will take into account the second land mentioned. 
+Remember, the land is the pathway to transport information between two blockchains in CCIP. Lands are unidirectional; it is not the same path to transfer information from Fuji to Sepolia instead of Sepolia to Fuji. For this example, we will take into account the second land mentioned.
 
-**Note: Chainlink CCIP has a list of Lands supported. Follow its offitial [documentation](https://docs.chain.link/ccip/supported-networks/v1_2_0/testnet) to see other options.**
+**Note: Chainlink CCIP has a list of Lands supported. Follow its official [documentation](https://docs.chain.link/ccip/supported-networks/v1_2_0/testnet) to see other options.**
 
 
 **Properties**
@@ -304,7 +305,7 @@ Fuji Destination Chain:
 
 ### Coding the Smart Contract
 
-For our cross chain dapp we need to develop a smart contract that transact our tokens from the source chain: Sepolia to the destination chain: Fuji. 
+For our cross chain dapp, we need to develop a smart contract that transacts our tokens from the source chain (Sepolia) to the destination chain (Fuji). 
 
 ### Contract's path
 
@@ -317,7 +318,7 @@ For our cross chain dapp we need to develop a smart contract that transact our t
 
 #### ChainsListerOperator.sol
 
-This smart contract handling the destination chain selectors supported by the protocol. 
+This smart contract handles the destination chain selectors supported by the protocol. 
 
 ```javascript
 // SPDX-License-Identifier: MIT
@@ -483,7 +484,8 @@ contract CCIPTokenSender is ChainsListerOperator {
 ```
 
 ### Deploying contracts
-**Note: Remember before do this you need had the set up your enviroment variables.** 
+
+**Note: Remember before doing this, you need to have set up your environment variables.** 
 
 Set up
 ```bash
@@ -495,20 +497,20 @@ Run
 forge create --rpc-url ethereumSepolia --private-key=$PRIVATE_KEY src/M2/CCIPTokenSender.sol:CCIPTokenSender --contructor-args 0x0BF3dE8c5D3e8A2B34D2BEeB17ABfCeBaf363A59 0x779877A7B0D9E8603169DdbD7836e478b4624789
 ```
 
-### Funds your CCIPTokenSender
+### Funding your CCIPTokenSender
 
-Okay, great!!! You are a genious, however you need to fund your CCIPTokenSender with the amount of fee tokens, in this case we will to use 1 link; and the amount of token that you want to send, in this case is 1000000000000000 CCIP-BnM equal to 0.001 CCIP-BnM.
+Great! Now you are a genius. However, you need to fund your CCIPTokenSender with the amount of fee tokens (in this case, we will use 1 LINK) and the amount of tokens that you want to send (in this case, 1000000000000000 CCIP-BnM, equal to 0.001 CCIP-BnM).
 
-In your Metamask wallet, you had imported both tokens in the Sepolia source chain. To send tokens to the contract place in the token receive field the CCIPTokenSender address and send the amount corresponding to the token. 
+In your Metamask wallet, you have imported both tokens on the Sepolia source chain. To send tokens to the contract, place the CCIPTokenSender address in the token receive field and send the amount corresponding to the token.
 
-**This is too easy to show how you can do it, please take effort about it.**
+**This is too easy to show how you can do it, please take an effort about it.**
 
 
 ### Transfer tokens
 
-Yeahh !! Finally we arrive to the final step of our journey. 
+Yeah! Finally, we arrive at the final step of our journey.
 
-Once we have our CCIPTokenSender smart contract funded with fee tokens and the tokens that we want to send, we need to whitelisted our destination chain-selector. 
+Once we have our CCIPTokenSender smart contract funded with fee tokens and the tokens that we want to send, we need to whitelist our destination chain-selector.
 
 Prepare
 - Fuji chain-selector: `14767482510784806043`
@@ -519,7 +521,7 @@ Run
 cast send <CCIP_TOKEN_SENDER_ADDRESS> --rpc-url ethereumSepolia --private-key=$PRIVATE_KEY "whitelistChain(uint64)" 14767482510784806043
 ```
 
-Now that we had whitelisted our destination chain-selector, we can transfer the amount of tokens to the EOA.
+Now that we have whitelisted our destination chain-selector, we can transfer the amount of tokens to the EOA.
 
 Prepare
 - Fuji chain-selector: `14767482510784806043`
@@ -532,13 +534,13 @@ Run
 cast send <CCIP_TOKEN_SENDER_ADDRESS> --rpc-url ethereumSepolia --private-key=$PRIVATE_KEY "transferTokensPaylinkToken(uint64,address,address,uint256)" 14767482510784806043 <RECEIVER_ADDRESS> 0xFd57b4ddBf88a4e07fF4e34C487b99af2Fe82a05 1000000000000000
 ```
 
-AWSOME!!! Now you have the hash of the transaction in your cli, you can get it and place into the [chainlink-ccip-explorer](https://ccip.chain.link/) to monitor the state of your transaction. 
+AWESOME!!! Now you have the hash of the transaction in your CLI, you can paste it into the [Chainlink-CCIP-Explorer](https://ccip.chain.link/) to monitor the state of your transaction. 
 
-### CONGRATULATIONS :) you had passed the Transfer Token between Chains journey
+### CCONGRATULATIONS! You have completed the Transfer Token between Chains journey.
 
 ### My own tech
 
-If you don't want to walk through the process of building the system (NOT RECOMMENDED, BECAUSE YOU HAVE TO LIVE YOUR OWN EXPERIENCE) and the only thing you want is to test the process of sending tokens through the Land, I'll provide you with the CCIPTokenSender address of my smart contract deployed on Sepolia. You could change the destination chain selctor if you want to test something different. Please let me know what do you did.
+If you don't want to walk through the process of building the system (NOT RECOMMENDED, BECAUSE YOU HAVE TO LIVE YOUR OWN EXPERIENCE) and the only thing you want is to test the process of sending tokens through the Land, I'll provide you with the CCIPTokenSender address of my smart contract deployed on Sepolia. You could change the destination chain selector if you want to test something different. Please let me know what you did.
 
 
 **CCIPTokenSender_INTO_SEPOLIA**
