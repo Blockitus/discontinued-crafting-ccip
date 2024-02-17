@@ -33,7 +33,7 @@
     - [Deploying contracts](#deploying-contracts)
     - [Funding your CCIPTokenSender](#funding-your-cciptokensender)
     - [Transfer tokens](#transfer-tokens)
-    - [CCONGRATULATIONS! You have completed the Transfer Token between Chains journey.](#ccongratulations-you-have-completed-the-transfer-token-between-chains-journey)
+    - [CONGRATULATIONS! You have completed the Transfer Token between Chains journey.](#congratulations-you-have-completed-the-transfer-token-between-chains-journey)
     - [My own tech](#my-own-tech)
 
 
@@ -576,7 +576,7 @@ cast send <CCIP_TOKEN_SENDER_ADDRESS> --rpc-url ethereumSepolia --private-key=$P
 
 AWESOME!!! Now you have the hash of the transaction in your CLI, you can paste it into the [Chainlink-CCIP-Explorer](https://ccip.chain.link/) to monitor the state of your transaction. 
 
-### CCONGRATULATIONS! You have completed the Transfer Token between Chains journey.
+### CONGRATULATIONS! You have completed the Transfer Token between Chains journey.
 
 ### My own tech
 
