@@ -1,5 +1,43 @@
 # CRAFTING-CCIP
-## Masterclassess
+
+# Table of Contents
+- [CRAFTING-CCIP](#crafting-ccip)
+- [Table of Contents](#table-of-contents)
+  - [Author](#author)
+    - [Pedro Machado](#pedro-machado)
+  - [Disclaimer](#disclaimer)
+  - [Introduction](#introduction)
+  - [Motivation](#motivation)
+  - [Basic Architecture of CCIP](#basic-architecture-of-ccip)
+  - [What is Chainlink Cross Chain Interoperability Protocol?](#what-is-chainlink-cross-chain-interoperability-protocol)
+  - [Requirements](#requirements)
+  - [Quickstart](#quickstart)
+  - [Setup environment variables](#setup-environment-variables)
+  - [Masterclassess](#masterclassess)
+  - [M1](#m1)
+    - [Sending a message from Avalanche Fuji network to Sepolia network](#sending-a-message-from-avalanche-fuji-network-to-sepolia-network)
+      - [Land](#land)
+      - [Set of Smart Contracts](#set-of-smart-contracts)
+      - [Deploying Smart Contracts](#deploying-smart-contracts)
+      - [Sending the message](#sending-the-message)
+    - [CONGRATULATIONS :)](#congratulations-)
+    - [My own tech summary](#my-own-tech-summary)
+  - [M2](#m2)
+    - [Transferring ERC20 from Sepolia to Fuji](#transferring-erc20-from-sepolia-to-fuji)
+    - [Types of Tokens Supported](#types-of-tokens-supported)
+    - [Land](#land-1)
+    - [Coding the Smart Contract](#coding-the-smart-contract)
+    - [Contract's path](#contracts-path)
+      - [ChainsListerOperator.sol](#chainslisteroperatorsol)
+      - [CCIPTokenSender.sol](#cciptokensendersol)
+    - [Deploying contracts](#deploying-contracts)
+    - [Funding your CCIPTokenSender](#funding-your-cciptokensender)
+    - [Transfer tokens](#transfer-tokens)
+    - [CCONGRATULATIONS! You have completed the Transfer Token between Chains journey.](#ccongratulations-you-have-completed-the-transfer-token-between-chains-journey)
+    - [My own tech](#my-own-tech)
+
+
+
 ## Author 
 
 ### Pedro Machado
@@ -58,7 +96,7 @@ forge install
 ```
 
 
-## Setup enviroment variables
+## Setup environment variables
 
 Create a `.env` file into your project and paste the code above:
 
@@ -77,6 +115,8 @@ Run
 source .env
 ```
 **Note: You have configured your `foundry.toml` file, so you don't have to make any changes there.** 
+
+## Masterclassess
 
 ## M1
 
